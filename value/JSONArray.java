@@ -18,7 +18,16 @@ public class JSONArray extends Value {
         this.array = new ArrayList<Value>();
     }
 
-    private void insertValue(int index, Value value) {
+    JSONArray(JSONArray value) {
+        super(Types.ARRAY);
+        this.array = new ArrayList<Value>(value.array);
+    }
+
+    // Inserts a new value at given index
+    // If old value exists then it is replaced
+    // If index is larger than current array size then
+    // values in between is filled with null
+    public void insertValue(int index, Value value) {
         if (index < 0) {
             return;
         }
@@ -31,6 +40,11 @@ public class JSONArray extends Value {
         } else {
             this.array.set(index, value);
         }
+    }
+
+    // Adds a value to the end of array
+    public void addValue(Value value) {
+        this.array.add(value);
     }
 
     public int size() {
@@ -48,6 +62,7 @@ public class JSONArray extends Value {
         return null;
     }
 
+    // Returns Value at given index, returns null if wrong index is given
     public Value getValue(int index) {
         try {
             return this.array.get(index);
@@ -64,16 +79,48 @@ public class JSONArray extends Value {
         insertValue(index, new Value.JSONBoolean(value));
     }
 
+    public void addBoolean(boolean value) {
+        putBoolean(this.array.size(), value);
+    }
+
     public void putString(int index, String value) {
         insertValue(index, new Value.JSONString(value));
+    }
+
+    public void addString(String value) {
+        putString(this.array.size(), value);
     }
 
     public void putNumber(int index, double value) {
         insertValue(index, new Value.JSONNumber(value));
     }
 
+    public void addNumber(double value) {
+        putNumber(this.array.size(), value);
+    }
+
     public void putNull(int index) {
         insertValue(index, new Value.JSONNull());
+    }
+
+    public void addNull() {
+        putNull(this.array.size());
+    }
+
+    public void putObject(int index, JSONObject value) {
+        insertValue(index, new JSONObject(value));
+    }
+
+    public void addObject(JSONObject value) {
+        putObject(this.array.size(), value);
+    }
+
+    public void putArray(int index, JSONArray value) {
+        insertValue(index, new JSONArray(value));
+    }
+
+    public void addArray(JSONArray value) {
+        putArray(this.array.size(), value);
     }
 
     private Value getTypeHelper(int index, Types type) throws JSONError {

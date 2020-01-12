@@ -2,7 +2,7 @@ package json.value;
 
 import json.value.Types;
 
-public class Value {
+public abstract class Value {
     private Types type;
 
     Value(Types type) {

@@ -17,21 +17,31 @@ public class JSONObject extends Value {
         this.map = new HashMap<String, Value>();
     }
 
-    private void insertValue(String key, Value value) {
+    JSONObject(JSONObject value) {
+        super(Types.OBJECT);
+        this.map = new HashMap<String, Value>(value.map);
+    }
+
+    // Insert a new key-value pair
+    public void insertValue(String key, Value value) {
         if (key.isEmpty()) {
             return;
         }
         this.map.put(key, value);
     }
 
+    // Checks whether object is empty
     public boolean isEmpty() {
         return this.map.isEmpty();
     }
 
+    // Checks if a particular key is present
     public boolean hasKey(String key) {
         return this.map.containsKey(key);
     }
 
+    // Returns type of Value for corresponding key
+    // If no value exists it returns null
     public Types getKeyType(String key) {
         if (this.map.containsKey(key)) {
             return this.map.get(key).getType();
@@ -63,6 +73,17 @@ public class JSONObject extends Value {
         insertValue(key, new Value.JSONNull());
     }
 
+    // Create a new copy of value adds it to Object
+    public void putObject(String key, JSONObject value) {
+        insertValue(key, new JSONObject(value));
+    }
+
+    // Create a new copy of value adds it to Object
+    public void putArray(String key, JSONArray value) {
+        insertValue(key, new JSONArray(value));
+    }
+
+    // Helper function. Checks if key exist and whether it is of given type
     private Value getTypeHelper(String key, Types type) throws JSONError {
         Value value = this.map.get(key);
         if (value == null) {
@@ -89,6 +110,7 @@ public class JSONObject extends Value {
         return value.getValue();
     }
 
+    // Check if existing key value is null value
     public boolean isNull(String key) throws JSONError {
         Value value = this.map.get(key);
         if (value == null) {

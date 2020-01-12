@@ -1,6 +1,5 @@
 package json.tokenizer;
 
-import json.tokenizer.*;
 import json.tokenizer.TokenError;
 import static json.tokenizer.Helper.*;
 
