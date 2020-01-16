@@ -7,9 +7,6 @@ import java.util.ArrayList;
 
 import json.tokenizer.tokens.*;
 
-import json.parser.Parser;
-import json.parser.Printer;
-
 public class Tokenizer {
 
     public Tokenizer(String source) {
