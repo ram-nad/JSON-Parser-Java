@@ -7,9 +7,12 @@ import java.util.ArrayList;
 
 import json.tokenizer.tokens.*;
 
-class Tokenizer {
+import json.parser.Parser;
+import json.parser.Printer;
 
-    Tokenizer(String source) {
+public class Tokenizer {
+
+    public Tokenizer(String source) {
         this.SourceString = source;
         this.line = 1;
         this.current = 0;
@@ -257,7 +260,7 @@ class Tokenizer {
         String test[] = new String[testCount];
         test[0] = "{\"Hello:\":\"\",\"\"}";
         test[1] = "{\"name\":\"john\",\"age\":22,\"class\":\"mca\"}";
-        test[2] = "{\n\"Hello\": [true, null, {\n\"true\": false}\r\n],\n}";
+        test[2] = "{\n\"Hello\": [true, null, {\n\"true\": false}\r\n]\n}";
         for (int i = 0; i < testCount; i++) {
             Tokenizer t = new Tokenizer(test[i]);
             try {

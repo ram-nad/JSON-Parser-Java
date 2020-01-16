@@ -13,6 +13,7 @@ public class TokenError extends Error {
         this.column = column;
     }
 
+    @Override
     public String getMessage() {
         return "Error in line " + this.line + " at character " + this.column + ": " + this.cause;
     }

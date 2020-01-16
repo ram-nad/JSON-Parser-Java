@@ -12,14 +12,18 @@ import json.value.JSONArray;
 public class JSONObject extends Value {
     private HashMap<String, Value> map;
 
-    JSONObject() {
+    public JSONObject() {
         super(Types.OBJECT);
         this.map = new HashMap<String, Value>();
     }
 
-    JSONObject(JSONObject value) {
+    public JSONObject(JSONObject value) {
         super(Types.OBJECT);
         this.map = new HashMap<String, Value>(value.map);
+    }
+
+    public HashMap<String, Value> getMap() {
+        return this.map;
     }
 
     // Insert a new key-value pair

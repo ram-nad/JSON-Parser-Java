@@ -16,7 +16,7 @@ public abstract class Value {
     public static class JSONBoolean extends Value {
         private boolean value;
 
-        JSONBoolean(boolean value) {
+        public JSONBoolean(boolean value) {
             super(Types.BOOLEAN);
             this.value = value;
         }
@@ -29,7 +29,7 @@ public abstract class Value {
     public static class JSONNumber extends Value {
         private double value;
 
-        JSONNumber(double value) {
+        public JSONNumber(double value) {
             super(Types.NUMBER);
             this.value = value;
         }
@@ -42,7 +42,7 @@ public abstract class Value {
     public static class JSONString extends Value {
         private String value;
 
-        JSONString(String value) {
+        public JSONString(String value) {
             super(Types.STRING);
             this.value = value;
         }
@@ -54,7 +54,7 @@ public abstract class Value {
 
     public static class JSONNull extends Value {
 
-        JSONNull() {
+        public JSONNull() {
             super(Types.NULL);
         }
     }

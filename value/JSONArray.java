@@ -13,14 +13,18 @@ public class JSONArray extends Value {
 
     private ArrayList<Value> array;
 
-    JSONArray() {
+    public JSONArray() {
         super(Types.ARRAY);
         this.array = new ArrayList<Value>();
     }
 
-    JSONArray(JSONArray value) {
+    public JSONArray(JSONArray value) {
         super(Types.ARRAY);
         this.array = new ArrayList<Value>(value.array);
+    }
+
+    public ArrayList<Value> getList() {
+        return this.array;
     }
 
     // Inserts a new value at given index
