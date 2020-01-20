@@ -1,29 +1,29 @@
 package json.tokenizer;
 
-public class Helper {
-    public final static char DOUBLE_QUOTE = '\"';
+class Helper {
+    final static char DOUBLE_QUOTE = '\"';
 
-    public final static char COLON = ':';
+    final static char COLON = ':';
 
-    public final static char COMMA = ',';
+    final static char COMMA = ',';
 
-    public final static char SLASH = '\\';
+    final static char SLASH = '\\';
 
-    public final static char NEWLINE = '\n';
+    final static char NEWLINE = '\n';
 
-    public final static char SQUARE_BRACKET_OPEN = '[';
+    final static char SQUARE_BRACKET_OPEN = '[';
 
-    public final static char SQUARE_BRACKET_CLOSE = ']';
+    final static char SQUARE_BRACKET_CLOSE = ']';
 
-    public final static char CURLY_BRACKETS_OPEN = '{';
+    final static char CURLY_BRACKETS_OPEN = '{';
 
-    public final static char CURLY_BRACKETS_CLOSE = '}';
+    final static char CURLY_BRACKETS_CLOSE = '}';
 
-    public final static char NULL_CHAR = '\0';
+    final static char NULL_CHAR = '\0';
 
-    public final static char DOT = '.';
+    final static char DOT = '.';
 
-    public static boolean isWhiteSpace(char character) {
+    static boolean isWhiteSpace(char character) {
         if (character == ' ') {
             return true;
         } else if (character == '\t') {
@@ -36,7 +36,7 @@ public class Helper {
         return false;
     }
 
-    public static boolean isDigit(char character) {
+    static boolean isDigit(char character) {
         if (character >= '0' && character <= '9') {
             return true;
         } else {
@@ -44,7 +44,7 @@ public class Helper {
         }
     }
 
-    public static boolean isLetter(char character) {
+    static boolean isLetter(char character) {
         if (character >= 'a' && character <= 'z') {
             return true;
         } else {

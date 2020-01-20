@@ -1,11 +1,11 @@
 package json.tokenizer;
 
-public class TokenError extends Error {
+class TokenError extends Error {
 
     private int line;
     private int column;
 
-    public TokenError(String cause, int line, int column) {
+    TokenError(String cause, int line, int column) {
         super(cause);
         this.line = line;
         this.column = column;
