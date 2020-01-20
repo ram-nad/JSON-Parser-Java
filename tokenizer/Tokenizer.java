@@ -9,12 +9,13 @@ import json.tokenizer.tokens.*;
 
 public class Tokenizer {
 
-    public Tokenizer(String source) {
+    public Tokenizer(String source) throws TokenError {
         this.SourceString = source;
         this.line = 1;
         this.current = 0;
         this.column = 1;
         this.tokens = null;
+        this.tokenize();
     }
 
     private String SourceString;
@@ -101,7 +102,7 @@ public class Tokenizer {
         case '/':
             return '/';
         default:
-            return NULL_CHAR; // Takes care of double, single quote and slash
+            return NULL_CHAR;
         }
     }
 
@@ -202,10 +203,7 @@ public class Tokenizer {
         }
     }
 
-    private ArrayList<Token> tokenize() throws TokenError {
-        if (this.tokens != null) {
-            return this.tokens;
-        }
+    private void tokenize() throws TokenError {
         this.tokens = new ArrayList<Token>();
         Token token;
         while (!isEnd()) {
@@ -241,7 +239,6 @@ public class Tokenizer {
             }
         }
         tokens.add(new Token(TokenTypes.END_OF_FILE, this.line, this.column));
-        return this.tokens;
     }
 
     public static void printTokens(ArrayList<Token> tokens) {
@@ -250,6 +247,10 @@ public class Tokenizer {
             System.out.print(" ");
         }
         System.out.println();
+    }
+
+    public ArrayList<Token> getTokens() {
+        return this.tokens;
     }
 
     public static void main(String args[]) {
@@ -261,7 +262,7 @@ public class Tokenizer {
         for (int i = 0; i < testCount; i++) {
             Tokenizer t = new Tokenizer(test[i]);
             try {
-                Tokenizer.printTokens(t.tokenize());
+                Tokenizer.printTokens(t.getTokens());
             } catch (TokenError error) {
                 System.out.println(error.getMessage());
             }
