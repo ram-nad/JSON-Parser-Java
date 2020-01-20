@@ -7,115 +7,139 @@ import java.util.Set;
 import json.value.*;
 
 public class Printer {
-    private static int tabCount;
 
-    public static void initialize() {
-        Printer.tabCount = 0;
+    public static enum OPTION {
+        PRETTY, SIMPLE
     }
 
-    private static void printNewLine() {
-        System.out.print("\n");
-        for (int i = 0; i < Printer.tabCount; i++) {
-            System.out.print("  ");
+    private static void printNewLine(StringBuilder buffer, int tabCount, OPTION opt) {
+        if (opt == OPTION.SIMPLE) {
+            return;
+        }
+        buffer.append("\n");
+        for (int i = 0; i < tabCount; i++) {
+            buffer.append("  ");
         }
     }
 
-    private static void printString(String str) {
-        System.out.print('"');
+    private static void printString(StringBuilder buffer, String str) {
+        buffer.append('"');
         for (int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
             switch (ch) {
             case '\b':
-                System.out.print("\\\b");
+                buffer.append("\\\b");
                 break;
             case '\f':
-                System.out.print("\\\f");
+                buffer.append("\\\f");
                 break;
             case '\r':
-                System.out.print("\\\r");
+                buffer.append("\\\r");
                 break;
             case '\n':
-                System.out.print("\\\n");
+                buffer.append("\\\n");
                 break;
             case '\t':
-                System.out.print("\\\t");
+                buffer.append("\\\t");
                 break;
             case '\\':
-                System.out.print("\\\\");
+                buffer.append("\\\\");
                 break;
             case '"':
-                System.out.print("\\\"");
+                buffer.append("\\\"");
                 break;
             case '/':
-                System.out.print("\\/");
+                buffer.append("\\/");
                 break;
             default:
-                System.out.print(ch);
+                buffer.append(ch);
             }
         }
-        System.out.print('"');
+        buffer.append('"');
     }
 
-    private static void printValue(Value val) {
+    private static void printValue(StringBuilder buffer, Value val, OPTION opt) {
         if (val.getType() == Types.BOOLEAN) {
-            System.out.print(((Value.JSONBoolean) val).getValue());
+            buffer.append(((Value.JSONBoolean) val).getValue());
         } else if (val.getType() == Types.NUMBER) {
-            System.out.print(((Value.JSONNumber) val).getValue());
+            buffer.append(((Value.JSONNumber) val).getValue());
         } else if (val.getType() == Types.STRING) {
-            Printer.printString(((Value.JSONString) val).getValue());
+            Printer.printString(buffer, ((Value.JSONString) val).getValue());
         } else if (val.getType() == Types.NULL) {
-            System.out.print("null");
+            buffer.append("null");
         } else if (val.getType() == Types.ARRAY) {
-            Printer.printArray((JSONArray) val);
+            Printer.printArray(buffer, (JSONArray) val, opt);
         } else {
-            Printer.printObject((JSONObject) val);
+            Printer.printObject(buffer, (JSONObject) val, opt);
         }
     }
 
-    public static void printArray(JSONArray array) {
+    private static void printArray(StringBuilder buffer, JSONArray array, OPTION opt) {
+        int tabCount = 0;
         ArrayList<Value> list = array.getList();
-        System.out.print("[");
+        buffer.append("[");
         if (list.isEmpty()) {
-            System.out.print("]");
+            buffer.append("]");
             return;
         }
-        Printer.tabCount++;
+        tabCount++;
         boolean printed = false;
         for (Value val : list) {
             if (printed) {
-                System.out.print(",");
+                buffer.append(",");
             }
-            Printer.printNewLine();
-            Printer.printValue(val);
+            Printer.printNewLine(buffer, tabCount, opt);
+            Printer.printValue(buffer, val, opt);
             printed = true;
         }
-        Printer.tabCount--;
-        Printer.printNewLine();
-        System.out.print("]");
+        tabCount--;
+        Printer.printNewLine(buffer, tabCount, opt);
+        buffer.append("]");
     }
 
-    public static void printObject(JSONObject object) {
+    private static void printObject(StringBuilder buffer, JSONObject object, OPTION opt) {
+        int tabCount = 0;
         HashMap<String, Value> map = object.getMap();
-        System.out.print("{");
+        buffer.append("{");
         if (map.isEmpty()) {
-            System.out.print("}");
+            buffer.append("}");
             return;
         }
-        Printer.tabCount++;
+        tabCount++;
         boolean printed = false;
         Set<String> keys = map.keySet();
         for (String key : keys) {
             if (printed) {
-                System.out.print(",");
+                buffer.append(",");
             }
-            Printer.printNewLine();
-            Printer.printString(key);
-            System.out.print(": ");
-            Printer.printValue(map.get(key));
+            Printer.printNewLine(buffer, tabCount, opt);
+            Printer.printString(buffer, key);
+            buffer.append(": ");
+            Printer.printValue(buffer, map.get(key), opt);
             printed = true;
         }
-        Printer.tabCount--;
-        Printer.printNewLine();
-        System.out.print("}");
+        tabCount--;
+        Printer.printNewLine(buffer, tabCount, opt);
+        buffer.append("}");
+    }
+
+    public static String JSONString(JSONObject object, OPTION opt) {
+        StringBuilder buffer = new StringBuilder();
+        Printer.printObject(buffer, object, opt);
+        return buffer.toString();
+    }
+
+    public static String JSONString(JSONArray array, OPTION opt) {
+        StringBuilder buffer = new StringBuilder();
+        Printer.printArray(buffer, array, opt);
+        return buffer.toString();
+    }
+
+    public static void print(JSONObject object, OPTION opt) {
+        System.out.print(Printer.JSONString(object, opt));
+    }
+
+    public static void print(JSONArray array, OPTION opt) {
+        System.out.print(Printer.JSONString(array, opt));
     }
 }

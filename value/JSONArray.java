@@ -76,7 +76,9 @@ public class JSONArray extends Value {
     }
 
     public void deleteIndex(int index) {
-        this.array.remove(index);
+        if (index >= 0 && index < this.array.size()) {
+            this.array.remove(index);
+        }
     }
 
     public void putBoolean(int index, boolean value) {
