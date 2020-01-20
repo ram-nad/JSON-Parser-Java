@@ -9,6 +9,8 @@ import json.value.JSONError;
 
 import json.value.JSONArray;
 
+import json.parser.Printer;
+
 public class JSONObject extends Value {
     private HashMap<String, Value> map;
 
@@ -132,5 +134,10 @@ public class JSONObject extends Value {
     public JSONArray getArray(String key) throws JSONError {
         JSONArray value = (JSONArray) getTypeHelper(key, Types.ARRAY);
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return Printer.JSONString(this, Printer.OPTION.SIMPLE);
     }
 }

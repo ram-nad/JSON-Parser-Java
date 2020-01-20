@@ -2,6 +2,8 @@ package json.value;
 
 import json.value.Types;
 
+import json.parser.Printer;
+
 public abstract class Value {
     private Types type;
 
@@ -24,6 +26,15 @@ public abstract class Value {
         public boolean getValue() {
             return this.value;
         }
+
+        @Override
+        public String toString() {
+            if (this.value) {
+                return "true";
+            } else {
+                return "false";
+            }
+        }
     }
 
     public static class JSONNumber extends Value {
@@ -36,6 +47,11 @@ public abstract class Value {
 
         public double getValue() {
             return this.value;
+        }
+
+        @Override
+        public String toString() {
+            return "" + this.value + "";
         }
     }
 
@@ -50,6 +66,11 @@ public abstract class Value {
         public String getValue() {
             return this.value;
         }
+
+        @Override
+        public String toString() {
+            return Printer.formatString(this.value);
+        }
     }
 
     public static class JSONNull extends Value {
@@ -57,5 +78,15 @@ public abstract class Value {
         public JSONNull() {
             super(Types.NULL);
         }
+
+        @Override
+        public String toString() {
+            return "null";
+        }
+    }
+
+    @Override
+    public String toString() {
+        return this.type.name();
     }
 }

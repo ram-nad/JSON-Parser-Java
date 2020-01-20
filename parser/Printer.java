@@ -142,4 +142,10 @@ public class Printer {
     public static void print(JSONArray array, OPTION opt) {
         System.out.print(Printer.JSONString(array, opt));
     }
+
+    public static String formatString(String str) {
+        StringBuilder buffer = new StringBuilder();
+        Printer.printString(buffer, str);
+        return buffer.toString();
+    }
 }
