@@ -1,6 +1,6 @@
 package json.tokenizer;
 
-class TokenError extends Error {
+public class TokenError extends Error {
 
     private int line;
     private int column;

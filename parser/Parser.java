@@ -53,6 +53,9 @@ public class Parser {
     private JSONObject parseObject() throws ParserError {
         consume(); // Consume the first token '{'
         JSONObject object = new JSONObject();
+        if (match(TokenTypes.CURLY_BRACKET_CLOSE)) { // If empty object
+            return object;
+        }
         while (true) {
             if (!match(TokenTypes.STRING)) {
                 throw new ParserError(expectedError("string", peek()));
@@ -76,6 +79,9 @@ public class Parser {
     private JSONArray parseArray() throws ParserError {
         consume(); // Consume the first token '['
         JSONArray array = new JSONArray();
+        if (match(TokenTypes.SQAURE_BRACKET_CLOSE)) { // If empty array
+            return array;
+        }
         while (true) {
             array.addValue(parseValue());
             if (!match(TokenTypes.SQAURE_BRACKET_CLOSE)) {

@@ -1,6 +1,6 @@
 package json.parser;
 
-class ParserError extends Error {
+public class ParserError extends Error {
 
     ParserError(String cause) {
         super(cause);
