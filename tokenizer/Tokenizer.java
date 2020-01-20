@@ -252,20 +252,4 @@ public class Tokenizer {
     public ArrayList<Token> getTokens() {
         return this.tokens;
     }
-
-    public static void main(String args[]) {
-        int testCount = 3;
-        String test[] = new String[testCount];
-        test[0] = "{\"Hello:\":\"\",\"\"}";
-        test[1] = "{\"name\":\"john\",\"age\":22,\"class\":\"mca\"}";
-        test[2] = "{\n\"Hello\": [true, null, {\n\"true\": false}\r\n]\n}";
-        for (int i = 0; i < testCount; i++) {
-            Tokenizer t = new Tokenizer(test[i]);
-            try {
-                Tokenizer.printTokens(t.getTokens());
-            } catch (TokenError error) {
-                System.out.println(error.getMessage());
-            }
-        }
-    }
 }

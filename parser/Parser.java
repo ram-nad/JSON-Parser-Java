@@ -6,7 +6,7 @@ import json.tokenizer.tokens.*;
 import json.value.Value;
 import json.value.JSONArray;
 import json.value.JSONObject;
-
+import json.value.Types;
 import json.parser.ParserError;
 
 public class Parser {
@@ -18,13 +18,14 @@ public class Parser {
     // Last read token
     private Token lastToken;
 
-    private boolean parsed;
+    // final parsed Value
+    private Value parsedValue;
 
     public Parser(ArrayList<Token> tokens) {
         this.tokens = tokens;
         this.current = 0;
         this.lastToken = null;
-        this.parsed = false;
+        this.parsedValue = parseInitial();
     }
 
     private Token consume() {
@@ -49,21 +50,21 @@ public class Parser {
         }
     }
 
-    private JSONObject parseObject() {
+    private JSONObject parseObject() throws ParserError {
         consume(); // Consume the first token '{'
         JSONObject object = new JSONObject();
         while (true) {
             if (!match(TokenTypes.STRING)) {
-                throw new ParserError(expectedError("String", this.lastToken.getLine(), this.lastToken.getColumn()));
+                throw new ParserError(expectedError("string", peek()));
             }
             StringToken key = (StringToken) this.lastToken;
             if (!match(TokenTypes.COLON)) {
-                throw new ParserError(expectedError(":", this.lastToken.getLine(), this.lastToken.getColumn()));
+                throw new ParserError(expectedError(":", peek()));
             }
             object.insertValue(key.getValue(), parseValue());
             if (!match(TokenTypes.CURLY_BRACKET_CLOSE)) {
                 if (!match(TokenTypes.COMMA)) {
-                    throw new ParserError(expectedError(",", this.lastToken.getLine(), this.lastToken.getColumn()));
+                    throw new ParserError(expectedError(",", peek()));
                 }
             } else {
                 break;
@@ -72,14 +73,14 @@ public class Parser {
         return object;
     }
 
-    private JSONArray parseArray() {
+    private JSONArray parseArray() throws ParserError {
         consume(); // Consume the first token '['
         JSONArray array = new JSONArray();
         while (true) {
             array.addValue(parseValue());
             if (!match(TokenTypes.SQAURE_BRACKET_CLOSE)) {
                 if (!match(TokenTypes.COMMA)) {
-                    throw new ParserError(expectedError(",", this.lastToken.getLine(), this.lastToken.getColumn()));
+                    throw new ParserError(expectedError(",", peek()));
                 }
             } else {
                 break;
@@ -92,11 +93,16 @@ public class Parser {
         return "Unexpected Token " + token + " at Line: " + token.getLine() + " Column: " + token.getColumn() + ".";
     }
 
-    private String expectedError(String type, int line, int column) {
-        return "Expected " + type + " after Line: " + line + " Column: " + column + ".";
+    private String expectedError(String type, Token token) {
+        if (token == null) {
+            return "Unexpected end of tokens. Expected \''" + type + "\'.";
+        } else {
+            return "Expected \'" + type + "\', but got " + token + " at Line: " + token.getLine() + " Column: "
+                    + token.getColumn() + ".";
+        }
     }
 
-    private Value parseValue() {
+    private Value parseValue() throws ParserError {
         Token token = peek();
         if (token == null) {
             throw new ParserError("Unexpected end of tokens.");
@@ -117,35 +123,28 @@ public class Parser {
         }
     }
 
-    public JSONObject getObject() {
-        if (this.parsed) {
-            throw new ParserError("Already Parsed. Cannot parse again.");
-        }
-        this.parsed = true;
-        if (peek().getType() != TokenTypes.CURLY_BRACKET_OPEN) {
-            throw new ParserError("Expected '{' at the beginning.");
-        }
-        JSONObject object = parseObject();
+    private Value parseInitial() throws ParserError {
+        Value value = parseValue();
         if (!match(TokenTypes.END_OF_FILE)) {
-            throw new ParserError(unexpectedError(peek()));
+            throw new ParserError(expectedError("End of File", peek()));
         } else {
-            return object;
+            return value;
         }
     }
 
-    public JSONArray getArray() {
-        if (this.parsed) {
-            throw new ParserError("Already Parsed. Cannot parse again.");
-        }
-        this.parsed = true;
-        if (peek().getType() != TokenTypes.SQAURE_BRACKET_OPEN) {
-            throw new ParserError("Expected '[' at the beginning.");
-        }
-        JSONArray array = parseArray();
-        if (!match(TokenTypes.END_OF_FILE)) {
-            throw new ParserError(unexpectedError(peek()));
+    public JSONObject getObject() throws ParserError {
+        if (this.parsedValue.getType() == Types.OBJECT) {
+            return (JSONObject) this.parsedValue;
         } else {
-            return array;
+            throw new ParserError("Cannot parse a JSON Object. Found " + this.parsedValue.getType().name() + ".");
+        }
+    }
+
+    public JSONArray getArray() throws ParserError {
+        if (this.parsedValue.getType() == Types.ARRAY) {
+            return (JSONArray) this.parsedValue;
+        } else {
+            throw new ParserError("Cannot parse a JSON Array. Found " + this.parsedValue.getType().name() + ".");
         }
     }
 }
